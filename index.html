@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I Am Canadian</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>I AM CANADIAN</h1>
+      <p class="hint">Press <kbd>Space</kbd> or click to drop · Same flags merge into history</p>
+    </header>
+
+    <main>
+      <div id="game-container">
+        <div id="game-canvas-wrapper"></div>
+        <div id="era-label"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Reveal overlay (Maple Leaf formed) -->
+  <div id="reveal-overlay">
+    <img id="reveal-flag" alt="Canadian Flag">
+    <h2>I am Canadian.</h2>
+    <button id="next-btn">NEXT →</button>
+  </div>
+
+  <!-- Thank you overlay -->
+  <div id="thankyou-overlay">
+    <img id="thankyou-gif" src="thank-you.gif" alt="Thank you for watching">
+    <h2>Thank you for watching</h2>
+    <button id="play-again-btn">Play Again</button>
+  </div>
+
+  <!-- Corner reset -->
+  <button id="corner-reset" title="Reset">↻</button>
+
+  <!-- Matter.js -->
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
