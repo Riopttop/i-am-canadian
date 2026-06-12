@@ -2,12 +2,96 @@
 //  I AM CANADIAN — Suika-style merge game
 // ==========================================
 
+// === INLINE SVG ASSETS ===
+// Inlined so the game works under file:// without a local server.
+const TIER_SVGS = [
+  // Tier 1: Red Ensign with Union Jack
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+    <defs><clipPath id="c1"><circle cx="50" cy="50" r="49"/></clipPath></defs>
+    <g clip-path="url(#c1)">
+      <rect width="100" height="100" fill="#C8102E"/>
+      <rect width="50" height="50" fill="#012169"/>
+      <line x1="0" y1="0" x2="50" y2="50" stroke="#FFFFFF" stroke-width="9"/>
+      <line x1="50" y1="0" x2="0" y2="50" stroke="#FFFFFF" stroke-width="9"/>
+      <line x1="0" y1="0" x2="50" y2="50" stroke="#C8102E" stroke-width="3"/>
+      <line x1="50" y1="0" x2="0" y2="50" stroke="#C8102E" stroke-width="3"/>
+      <rect y="19" width="50" height="12" fill="#FFFFFF"/>
+      <rect x="19" width="12" height="50" fill="#FFFFFF"/>
+      <rect y="22" width="50" height="6" fill="#C8102E"/>
+      <rect x="22" width="6" height="50" fill="#C8102E"/>
+    </g>
+    <circle cx="50" cy="50" r="49" fill="none" stroke="#5C0810" stroke-width="2"/>
+  </svg>`,
+
+  // Tier 2: Vimy Ridge Memorial
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+    <defs>
+      <clipPath id="c2"><circle cx="50" cy="50" r="49"/></clipPath>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1d2940"/>
+        <stop offset="60%" stop-color="#3d5278"/>
+        <stop offset="100%" stop-color="#5d7298"/>
+      </linearGradient>
+    </defs>
+    <g clip-path="url(#c2)">
+      <rect width="100" height="100" fill="url(#sky)"/>
+      <rect y="75" width="100" height="25" fill="#3a3528"/>
+      <rect x="22" y="73" width="56" height="5" fill="#e8e0cc"/>
+      <rect x="18" y="78" width="64" height="4" fill="#d4cdb8"/>
+      <rect x="38" y="18" width="8" height="55" fill="#f0e8d0"/>
+      <rect x="54" y="18" width="8" height="55" fill="#f0e8d0"/>
+      <polygon points="38,18 46,18 44,14 40,14" fill="#f0e8d0"/>
+      <polygon points="54,18 62,18 60,14 56,14" fill="#f0e8d0"/>
+      <rect x="36" y="68" width="12" height="5" fill="#c8bfa3"/>
+      <rect x="52" y="68" width="12" height="5" fill="#c8bfa3"/>
+    </g>
+    <circle cx="50" cy="50" r="49" fill="none" stroke="#0a1428" stroke-width="2"/>
+  </svg>`,
+
+  // Tier 3: Canada + Korea
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+    <defs><clipPath id="c3"><circle cx="50" cy="50" r="49"/></clipPath></defs>
+    <g clip-path="url(#c3)">
+      <rect width="50" height="100" fill="#D52B1E"/>
+      <rect x="50" width="50" height="100" fill="#FFFFFF"/>
+      <g transform="translate(25, 50) scale(0.32)">
+        <path d="M 0,-50 L 8,-25 L 30,-30 L 22,-15 L 50,-10 L 32,5 L 45,18 L 22,18 L 28,38 L 8,28 L 5,50 L 0,40 L -5,50 L -8,28 L -28,38 L -22,18 L -45,18 L -32,5 L -50,-10 L -22,-15 L -30,-30 L -8,-25 Z" fill="#FFFFFF"/>
+      </g>
+      <g transform="translate(75, 50)">
+        <path d="M -18,0 A 18,18 0 0,1 18,0 A 9,9 0 0,0 0,0 A 9,9 0 0,1 -18,0 Z" fill="#CD2E3A"/>
+        <path d="M 18,0 A 18,18 0 0,1 -18,0 A 9,9 0 0,0 0,0 A 9,9 0 0,1 18,0 Z" fill="#0047A0"/>
+      </g>
+      <line x1="50" y1="0" x2="50" y2="100" stroke="#888888" stroke-width="0.5" opacity="0.4"/>
+    </g>
+    <circle cx="50" cy="50" r="49" fill="none" stroke="#333333" stroke-width="2"/>
+  </svg>`,
+
+  // Tier 4: Canadian Maple Leaf Flag
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+    <defs><clipPath id="c4"><circle cx="50" cy="50" r="49"/></clipPath></defs>
+    <g clip-path="url(#c4)">
+      <rect width="100" height="100" fill="#FFFFFF"/>
+      <rect width="25" height="100" fill="#D52B1E"/>
+      <rect x="75" width="25" height="100" fill="#D52B1E"/>
+      <g transform="translate(50, 50) scale(0.45)">
+        <path d="M 0,-50 L 8,-25 L 30,-30 L 22,-15 L 50,-10 L 32,5 L 45,18 L 22,18 L 28,38 L 8,28 L 5,50 L 0,40 L -5,50 L -8,28 L -28,38 L -22,18 L -45,18 L -32,5 L -50,-10 L -22,-15 L -30,-30 L -8,-25 Z" fill="#D52B1E"/>
+      </g>
+    </g>
+    <circle cx="50" cy="50" r="49" fill="none" stroke="#8B0000" stroke-width="2"/>
+  </svg>`
+];
+
+// Convert raw SVG markup to a data URI usable as a canvas texture
+function svgToDataUri(svg) {
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
 // === CONFIG ===
 const TIERS = [
-  { name: 'Red Ensign',     radius: 22, sprite: 'assets/tier1-red-ensign.svg',   label: '' },
-  { name: 'Vimy Ridge',     radius: 32, sprite: 'assets/tier2-vimy.svg',          label: '1917  —  VIMY RIDGE' },
-  { name: 'Canada + Korea', radius: 45, sprite: 'assets/tier3-canada-korea.svg',  label: '1950  —  KOREAN WAR' },
-  { name: 'Maple Leaf',     radius: 60, sprite: 'assets/tier4-maple-leaf.svg',    label: '1965  —  CANADA' }
+  { name: 'Red Ensign',     radius: 22, sprite: svgToDataUri(TIER_SVGS[0]), label: '' },
+  { name: 'Vimy Ridge',     radius: 32, sprite: svgToDataUri(TIER_SVGS[1]), label: '1917  —  VIMY RIDGE' },
+  { name: 'Canada + Korea', radius: 45, sprite: svgToDataUri(TIER_SVGS[2]), label: '1950  —  KOREAN WAR' },
+  { name: 'Maple Leaf',     radius: 60, sprite: svgToDataUri(TIER_SVGS[3]), label: '1965  —  CANADA' }
 ];
 
 const GAME_WIDTH = 440;
@@ -21,7 +105,7 @@ const { Engine, Render, World, Bodies, Body, Events, Composite, Runner } = Matte
 
 // === STATE ===
 let engine, render, runner;
-const bodyTiers = new WeakMap();   // Matter body -> tier index
+const bodyTiers = new WeakMap();
 let gameWon = false;
 let lastDropTime = 0;
 let pointerX = GAME_WIDTH / 2;
@@ -49,7 +133,6 @@ function init() {
   runner = Runner.create();
   Runner.run(runner, engine);
 
-  // Walls
   const wallStyle = { isStatic: true, render: { fillStyle: '#1a2a45' } };
   Composite.add(engine.world, [
     Bodies.rectangle(GAME_WIDTH / 2, GAME_HEIGHT - WALL_THICKNESS / 2, GAME_WIDTH, WALL_THICKNESS, wallStyle),
@@ -59,6 +142,13 @@ function init() {
 
   Events.on(engine, 'collisionStart', handleCollision);
   setupInput();
+  fixRevealImage();
+}
+
+// Make the reveal overlay flag use the inlined SVG too, so it works under file://
+function fixRevealImage() {
+  const img = document.getElementById('reveal-flag');
+  if (img) img.src = TIERS[3].sprite;
 }
 
 // ==========================================
@@ -71,7 +161,7 @@ function spawn(tierIndex, x, y) {
     friction: 0.6,
     frictionAir: 0.005,
     density: 0.0012 + tierIndex * 0.0003,
-    inertia: Infinity,   // lock rotation so flags stay upright
+    inertia: Infinity,
     render: {
       sprite: {
         texture: t.sprite,
@@ -99,7 +189,7 @@ function handleCollision(event) {
     const tierB = bodyTiers.get(bodyB);
     if (tierA === undefined || tierB === undefined) continue;
     if (tierA !== tierB) continue;
-    if (tierA >= TIERS.length - 1) continue; // already at max tier
+    if (tierA >= TIERS.length - 1) continue;
 
     consumed.add(bodyA);
     consumed.add(bodyB);
@@ -157,13 +247,11 @@ function setupInput() {
     spawn(0, clampedX, SPAWN_Y);
   }
 
-  // Track pointer X for spacebar drops
   wrapper.addEventListener('mousemove', (e) => {
     const rect = wrapper.getBoundingClientRect();
     pointerX = e.clientX - rect.left;
   });
 
-  // Spacebar drops at current pointer X (or center if no mouse movement)
   document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && !e.repeat) {
       e.preventDefault();
@@ -171,13 +259,11 @@ function setupInput() {
     }
   });
 
-  // Click drops at clicked position
   wrapper.addEventListener('click', (e) => {
     const rect = wrapper.getBoundingClientRect();
     drop(e.clientX - rect.left);
   });
 
-  // Reset buttons
   document.getElementById('reset-btn').addEventListener('click', resetGame);
   document.getElementById('corner-reset').addEventListener('click', resetGame);
 }
